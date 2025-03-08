@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title th:text="${equipo.nombre} + ' - Sistema de Login'">Equipo - Sistema de Login</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/equipos.css}">
+</head>
+<body>
+    <!-- Incluir navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-futbol me-2"></i>
+                        <span th:text="${equipo.nombre}">Nombre del Equipo</span>
+                    </h3>
+                    <span class="badge" th:classappend="${equipo.getCategoria() == 'Primera División'} ? 'bg-success' : 'bg-warning'"
+                          th:text="${equipo.getCategoria()}">Categoría</span>
+                </div>
+            </div>
+            
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <img th:if="${equipo.urlEscudo}" th:src="${equipo.urlEscudo}" class="img-fluid escudo-grande mb-3" alt="Escudo">
+                        <img th:unless="${equipo.urlEscudo}" th:src="@{/img/escudo-default.png}" class="img-fluid escudo-grande mb-3" alt="Escudo">
+                        
+                        <div class="d-grid gap-2 mt-3">
+                            <div sec:authorize="isAuthenticated()">
+                                <form th:action="@{/equipos/{id}/favorito(id=${equipo.id})}" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-warning w-100" 
+                                            th:classappend="${esFavorito} ? 'active' : ''"
+                                            title="Marcar como favorito">
+                                        <i class="fas fa-star me-2"></i>
+                                        <span th:if="${esFavorito}">Quitar de favoritos</span>
+                                        <span th:unless="${esFavorito}">Añadir a favoritos</span>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <div sec:authorize="isAuthenticated()" 
+                                 th:with="usuarioActual=${#authentication.principal.username}"
+                                 th:if="${equipo.usuarioCreador != null && equipo.usuarioCreador.username == usuarioActual}">
+                                <a th:href="@{/equipos/{id}/editar(id=${equipo.id})}" class="btn btn-primary w-100 mt-2">
+                                    <i class="fas fa-edit me-2"></i> Editar
+                                </a>
+                                <form th:action="@{/equipos/{id}/eliminar(id=${equipo.id})}" method="post" 
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este equipo?')">
+                                    <button type="submit" class="btn btn-danger w-100 mt-2">
+                                        <i class="fas fa-trash me-2"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <h4>Información General</h4>
+                        <table class="table">
+                            <tr>
+                                <th style="width: 30%"><i class="fas fa-map-marker-alt me-2"></i> Ciudad:</th>
+                                <td th:text="${equipo.ciudad}">Barcelona</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-home me-2"></i> Estadio:</th>
+                                <td th:text="${equipo.estadio}">Camp Nou</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-users me-2"></i> Capacidad:</th>
+                                <td th:text="${#numbers.formatInteger(equipo.capacidadEstadio, 0, 'POINT')} + ' espectadores'">99,000 espectadores</td>
+                            </tr>
+                            <tr>
+                                <th><i class="fas fa-calendar me-2"></i> Fundación:</th>
+                                <td th:text="${equipo.anioFundacion}">1899</td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Información específica según tipo de equipo -->
+                        <div th:if="${equipo instanceof T(com.example.demo.model.EquipoPrimera)}">
+                            <h4>Información de Primera División</h4>
+                            <table class="table">
+                                <tr>
+                                    <th style="width: 30%"><i class="fas fa-trophy me-2"></i> Títulos de Liga:</th>
+                                    <td th:text="${equipo.titulosLiga}">26</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-star me-2"></i> Puntos UEFA:</th>
+                                    <td th:text="${equipo.puntosUEFA}">120</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-check-circle me-2"></i> Champions:</th>
+                                    <td>
+                                        <span th:if="${equipo.participaChampions}" class="badge bg-success">Sí participa</span>
+                                        <span th:unless="${equipo.participaChampions}" class="badge bg-secondary">No participa</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div th:if="${equipo instanceof T(com.example.demo.model.EquipoSegunda)}">
+                            <h4>Información de Segunda División</h4>
+                            <table class="table">
+                                <tr>
+                                    <th style="width: 30%"><i class="fas fa-history me-2"></i> Temporadas en Primera:</th>
+                                    <td th:text="${equipo.temporadasEnPrimera}">10</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-euro-sign me-2"></i> Presupuesto Anual:</th>
+                                    <td th:text="${#numbers.formatInteger(equipo.presupuestoAnual, 0, 'POINT')} + ' €'">5,000,000 €</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-arrow-up me-2"></i> Aspirante al ascenso:</th>
+                                    <td>
+                                        <span th:if="${equipo.aspiranteAscenso}" class="badge bg-success">Sí aspira</span>
+                                        <span th:unless="${equipo.aspiranteAscenso}" class="badge bg-secondary">No aspira</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- Información del creador -->
+                        <div class="mt-4" th:if="${equipo.usuarioCreador != null}">
+                            <h5 class="text-muted">
+                                <i class="fas fa-user me-2"></i> 
+                                Creado por: <span th:text="${equipo.usuarioCreador.username}">usuario</span>
+                                <small th:if="${equipo.fechaCreacion != null}" th:text="'el ' + ${#dates.format(equipo.fechaCreacion, 'dd/MM/yyyy HH:mm')}">01/01/2023 12:00</small>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <a th:href="@{/equipos}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Volver a la lista
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

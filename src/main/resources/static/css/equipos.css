@@ -1,0 +1,49 @@
+/* Estilos para las tarjetas de equipos */
+.equipo-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.equipo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.categoria-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+
+.escudo-equipo {
+    max-height: 120px;
+    object-fit: contain;
+}
+
+.escudo-grande {
+    max-height: 200px;
+    object-fit: contain;
+}
+
+/* Estilo para la barra de navegación */
+.navbar .nav-item .nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid #ffffff;
+}
+
+/* Animación de favorito */
+form .btn-warning.active {
+    animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+} 

@@ -22,8 +22,10 @@ public class SecurityConfig {
                 .frameOptions(frameOptions -> frameOptions.sameOrigin()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                .requestMatchers("/", "/registro", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/", "/registro", "/css/**", "/js/**", "/img/**").permitAll()
+                .requestMatchers("/equipos", "/equipos/categoria/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/equipos/nuevo", "/equipos/*/editar", "/equipos/*/eliminar", "/equipos/mis-equipos").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
