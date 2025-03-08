@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error - Biblioteca</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container error-container">
+        <h1>¡Oops! Algo salió mal</h1>
+        
+        <div class="error-message">
+            <p th:text="${error ?: 'Ha ocurrido un error inesperado.'}"></p>
+        </div>
+        
+        <div class="buttons">
+            <a th:href="@{/}" class="btn">Volver al Inicio</a>
+        </div>
+    </div>
+</body>
+</html> 
