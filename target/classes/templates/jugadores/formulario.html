@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${accion} + ' Jugador - Sistema de Fútbol'">Jugador - Sistema de Fútbol</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <style>
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-dribbble"></i> Sistema de Fútbol
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/dashboard}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/equipos}">
+                            <i class="bi bi-shield"></i> Equipos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/jugadores}">
+                            <i class="bi bi-person"></i> Jugadores
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/jugadores}">Jugadores</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${accion} + ' Jugador'">Jugador</li>
+                    </ol>
+                </nav>
+                <h2 th:text="${accion} + ' Jugador'">Jugador</h2>
+                <p class="text-muted" th:if="${accion == 'Crear'}">Completa el formulario para registrar un nuevo jugador.</p>
+                <p class="text-muted" th:if="${accion == 'Actualizar'}">Actualiza la información del jugador.</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form th:action="${accion == 'Crear'} ? @{/jugadores/nuevo} : @{/jugadores/{id}/editar(id=${jugador.id})}"
+                              th:object="${jugador}" method="post" novalidate>
+                            
+                            <!-- ID oculto para actualización -->
+                            <input type="hidden" th:field="*{id}" th:if="${jugador.id != null}">
+                            
+                            <!-- Datos personales -->
+                            <h5 class="mb-3">Datos Personales</h5>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="nombre" class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" 
+                                           th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}">
+                                        Error en el nombre
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="apellidos" class="form-label">Apellidos *</label>
+                                    <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}"
+                                           th:classappend="${#fields.hasErrors('apellidos')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}">
+                                        Error en los apellidos
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento *</label>
+                                    <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}"
+                                           th:classappend="${#fields.hasErrors('fechaNacimiento')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}">
+                                        Error en la fecha de nacimiento
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="nacionalidad" class="form-label">Nacionalidad *</label>
+                                    <input type="text" class="form-control" id="nacionalidad" th:field="*{nacionalidad}"
+                                           th:classappend="${#fields.hasErrors('nacionalidad')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nacionalidad')}" th:errors="*{nacionalidad}">
+                                        Error en la nacionalidad
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="foto" class="form-label">URL de la Foto</label>
+                                <input type="text" class="form-control" id="foto" th:field="*{foto}"
+                                       placeholder="https://ejemplo.com/foto.jpg">
+                                <div class="form-text">Introduce la URL de la foto del jugador.</div>
+                            </div>
+                            
+                            <!-- Datos deportivos -->
+                            <h5 class="mb-3 mt-4">Datos Deportivos</h5>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="posicion" class="form-label">Posición *</label>
+                                    <select class="form-select" id="posicion" th:field="*{posicion}" 
+                                            th:classappend="${#fields.hasErrors('posicion')} ? 'is-invalid' : ''">
+                                        <option value="">-- Selecciona una posición --</option>
+                                        <option th:each="pos : ${posiciones}" 
+                                                th:value="${pos}" 
+                                                th:text="${pos.displayName}">Posición</option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('posicion')}" th:errors="*{posicion}">
+                                        Error en la posición
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dorsal" class="form-label">Dorsal *</label>
+                                    <input type="number" class="form-control" id="dorsal" th:field="*{dorsal}"
+                                           min="1" max="99"
+                                           th:classappend="${#fields.hasErrors('dorsal')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('dorsal')}" th:errors="*{dorsal}">
+                                        Error en el dorsal
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="altura" class="form-label">Altura (cm)</label>
+                                    <input type="number" class="form-control" id="altura" th:field="*{altura}"
+                                           min="150" max="220"
+                                           th:classappend="${#fields.hasErrors('altura')} ? 'is-invalid' : ''">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('altura')}" th:errors="*{altura}">
+                                        Error en la altura
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="equipo" class="form-label">Equipo</label>
+                                    <select class="form-select" id="equipo" th:field="*{equipo}">
+                                        <option value="">-- Sin equipo --</option>
+                                        <option th:each="eq : ${equipos}" 
+                                                th:value="${eq.id}" 
+                                                th:text="${eq.nombre}">Equipo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Botones de acción -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a th:href="@{/jugadores}" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> <span th:text="${accion}">Guardar</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4" th:if="${accion == 'Actualizar'}">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Vista Previa</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="mb-3 position-relative">
+                            <img th:if="${jugador.foto}" th:src="${jugador.foto}" class="rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;" alt="Foto del jugador">
+                            <div th:unless="${jugador.foto}" class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px;">
+                                <i class="bi bi-person text-muted" style="font-size: 4rem;"></i>
+                            </div>
+                            <span th:if="${jugador.dorsal}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark" style="transform: translateX(-50%);">
+                                <span th:text="${jugador.dorsal}">00</span>
+                            </span>
+                        </div>
+                        
+                        <h5>
+                            <span th:text="${jugador.nombre}">Nombre</span> 
+                            <span th:text="${jugador.apellidos}">Apellidos</span>
+                        </h5>
+                        
+                        <p class="mb-1">
+                            <span class="badge bg-primary" th:if="${jugador.posicion}" th:text="${jugador.posicion.displayName}">Posición</span>
+                        </p>
+                        
+                        <ul class="list-group list-group-flush mt-3">
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span class="text-muted">Nacionalidad:</span>
+                                <span th:text="${jugador.nacionalidad}">Nacionalidad</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0" th:if="${jugador.fechaNacimiento}">
+                                <span class="text-muted">Edad:</span>
+                                <span th:text="${#temporals.createNow().getYear() - jugador.fechaNacimiento.getYear()}">Edad</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0" th:if="${jugador.altura}">
+                                <span class="text-muted">Altura:</span>
+                                <span th:text="${jugador.altura} + ' cm'">Altura</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between px-0">
+                                <span class="text-muted">Equipo:</span>
+                                <span th:if="${jugador.equipo}" th:text="${jugador.equipo.nombre}">Equipo</span>
+                                <span class="text-danger" th:unless="${jugador.equipo}">Sin equipo</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script para mostrar vista previa de la foto del jugador
+        document.getElementById('foto').addEventListener('change', function() {
+            const imagePreview = document.querySelector('img');
+            if (imagePreview) {
+                imagePreview.src = this.value || 'https://via.placeholder.com/120?text=No+Image';
+            }
+        });
+    </script>
+</body>
+</html> 
