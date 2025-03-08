@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Administración - Sistema de Login</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sistema de Login</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link active" th:href="@{/admin}">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/h2-console}" target="_blank">H2 Console</a>
+                    </li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Panel de Administración</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Lista de Usuarios</h4>
+                        <p>Aquí puedes ver todos los usuarios registrados en el sistema, incluyendo sus contraseñas encriptadas:</p>
+                        
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Contraseña Encriptada</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="usuario : ${usuarios}">
+                                    <td th:text="${usuario.id}">1</td>
+                                    <td th:text="${usuario.username}">usuario</td>
+                                    <td th:text="${usuario.email}">correo@ejemplo.com</td>
+                                    <td th:text="${usuario.role}">ROLE_USER</td>
+                                    <td>
+                                        <span th:text="${#strings.substring(usuario.password, 0, 20) + '...'}">bcrypt...</span>
+                                        <button class="btn btn-sm btn-outline-info" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                th:title="${usuario.password}">
+                                            Ver completo
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <span th:if="${usuario.activo}" class="badge bg-success">Activo</span>
+                                        <span th:unless="${usuario.activo}" class="badge bg-danger">Inactivo</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div class="alert alert-info mt-3">
+                            <h5>Información sobre Contraseñas:</h5>
+                            <p>Las contraseñas están encriptadas con BCrypt. Cada vez que un usuario se registra o cambia su contraseña, 
+                               se genera un nuevo hash aleatorio, incluso si la contraseña texto plano es la misma.</p>
+                            <p>Si quieres verificar una contraseña, no puedes compararla directamente con el hash almacenado, 
+                               debes usar el método <code>matches()</code> del <code>PasswordEncoder</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Inicializar tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltips = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltips.map(function(tooltip) {
+                return new bootstrap.Tooltip(tooltip);
+            });
+        });
+    </script>
+</body>
+</html> 
