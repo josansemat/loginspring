@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Formulario Equipo - Sistema</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Sistema de Gestión</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/dashboard}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/equipos}">Equipos</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/admin}">Admin</a>
+                    </li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link">Cerrar Sesión</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 th:text="${equipo.id == null ? 'Nuevo Equipo' : 'Editar Equipo'}">Formulario Equipo</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/equipos/guardar}" th:object="${equipo}" method="post">
+                            <input type="hidden" th:field="*{id}">
+                            
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre</label>
+                                <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="ciudad" class="form-label">Ciudad</label>
+                                <input type="text" th:field="*{ciudad}" id="ciudad" class="form-control" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('ciudad')}" th:errors="*{ciudad}"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="añoFundacion" class="form-label">Año de Fundación</label>
+                                <input type="number" th:field="*{añoFundacion}" id="añoFundacion" class="form-control" min="1800">
+                                <div class="text-danger" th:if="${#fields.hasErrors('añoFundacion')}" th:errors="*{añoFundacion}"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="estadio" class="form-label">Estadio</label>
+                                <input type="text" th:field="*{estadio}" id="estadio" class="form-control">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="entrenador" class="form-label">Entrenador</label>
+                                <input type="text" th:field="*{entrenador}" id="entrenador" class="form-control">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="liga" class="form-label">Liga</label>
+                                <input type="text" th:field="*{liga}" id="liga" class="form-control">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="urlEscudo" class="form-label">URL del Escudo</label>
+                                <input type="url" th:field="*{urlEscudo}" id="urlEscudo" class="form-control">
+                                <small class="form-text text-muted">Introduce la URL de la imagen del escudo</small>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/equipos}" class="btn btn-secondary me-md-2">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

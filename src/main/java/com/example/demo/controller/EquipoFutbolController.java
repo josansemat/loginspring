@@ -27,14 +27,14 @@ public class EquipoFutbolController {
     @GetMapping
     public String listarEquipos(Model model) {
         model.addAttribute("equipos", equipoService.obtenerTodosEquipos());
-        return "equipos/lista";
+        return "equipos_lista";
     }
     
     // Formulario para nuevo equipo
     @GetMapping("/nuevo")
     public String formularioNuevoEquipo(Model model) {
         model.addAttribute("equipo", new EquipoFutbol());
-        return "equipos/formulario";
+        return "equipos_formulario";
     }
     
     // Guardar nuevo equipo
@@ -43,7 +43,7 @@ public class EquipoFutbolController {
                               BindingResult result, 
                               RedirectAttributes flash) {
         if (result.hasErrors()) {
-            return "equipos/formulario";
+            return "equipos_formulario";
         }
         
         equipoService.guardarEquipo(equipo);
@@ -58,7 +58,7 @@ public class EquipoFutbolController {
         
         if (equipo.isPresent()) {
             model.addAttribute("equipo", equipo.get());
-            return "equipos/formulario";
+            return "equipos_formulario";
         } else {
             flash.addFlashAttribute("error", "El equipo no existe");
             return "redirect:/equipos";
@@ -72,7 +72,7 @@ public class EquipoFutbolController {
         
         if (equipo.isPresent()) {
             model.addAttribute("equipo", equipo.get());
-            return "equipos/ver";
+            return "equipos_ver";
         } else {
             flash.addFlashAttribute("error", "El equipo no existe");
             return "redirect:/equipos";
