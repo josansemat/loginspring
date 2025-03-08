@@ -37,6 +37,12 @@ public class EquipoController {
     @Autowired
     private EquiposFavoritosBean equiposFavoritos;
     
+    // Método para proporcionar equiposFavoritos a todas las vistas
+    @ModelAttribute("equiposFavoritos")
+    public EquiposFavoritosBean getEquiposFavoritos() {
+        return equiposFavoritos;
+    }
+    
     // Listar todos los equipos
     @GetMapping
     public String listarEquipos(Model model, @RequestParam(required = false) String buscar) {
