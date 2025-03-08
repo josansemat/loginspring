@@ -20,12 +20,12 @@ public class DashboardController {
     @Autowired
     private FutbolManagedBean futbolManagedBean;
     
-    @GetMapping("/dashboard")
+    @GetMapping("/futbol-dashboard")
     public String dashboard(Model model) {
         model.addAttribute("totalEquipos", equipoService.listarTodos().size());
         model.addAttribute("totalJugadores", jugadorService.listarTodos().size());
         model.addAttribute("futbolBean", futbolManagedBean);
         
-        return "dashboard";
+        return "futbol-dashboard";
     }
 } 

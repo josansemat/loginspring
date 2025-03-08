@@ -20,7 +20,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/registro", "/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/equipos/**", "/jugadores/**").authenticated()
+                .requestMatchers("/equipos/**", "/jugadores/**", "/futbol-dashboard").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
