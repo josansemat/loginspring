@@ -85,11 +85,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!-- jakarta -->
-		<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
 		
 		<!-- Agregar dependencia de PostgreSQL -->
 		<dependency>

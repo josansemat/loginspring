@@ -16,10 +16,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/", "/registro", "/css/**", "/js/**", "/images/**").permitAll()
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")))
+            .headers(headers -> headers
+                .frameOptions(frameOptions -> frameOptions.sameOrigin()))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                .requestMatchers("/", "/registro", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/equipos/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -31,11 +35,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")
                 .permitAll()
             );
-            
-        // Para H2 Console (solo en desarrollo)
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
-        http.headers(headers -> headers.frameOptions().disable());
-            
+        
         return http.build();
     }
     
