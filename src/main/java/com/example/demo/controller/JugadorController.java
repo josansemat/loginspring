@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,36 +30,10 @@ public class JugadorController {
         return "jugadores/lista";
     }
     
-    @GetMapping("/buscar")
-    public String buscarJugadores(
-            @RequestParam(required = false) String busqueda,
-            @RequestParam(required = false) String posicion,
-            @RequestParam(required = false) String equipo,
-            Model model) {
-        
-        // Aquí implementar la lógica de búsqueda
-        List<Jugador> resultados = jugadorService.buscar(busqueda, posicion, equipo);
-        model.addAttribute("jugadores", resultados);
-        return "jugadores/lista";
-    }
-    
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("jugador", new Jugador());
         return "jugadores/formulario";
-    }
-    
-    @GetMapping("/detalle/{id}")
-    public String verDetalle(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
-        Optional<Jugador> jugadorOpt = jugadorService.buscarPorId(id);
-        
-        if (jugadorOpt.isPresent()) {
-            model.addAttribute("jugador", jugadorOpt.get());
-            return "jugadores/detalle";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "El jugador no existe");
-            return "redirect:/jugadores";
-        }
     }
     
     @PostMapping("/guardar")
@@ -75,12 +48,7 @@ public class JugadorController {
             }
             
             jugadorService.guardar(jugador);
-            
-            String mensaje = (jugador.getId() == null) 
-                ? "Jugador creado correctamente" 
-                : "Jugador actualizado correctamente";
-            
-            redirectAttributes.addFlashAttribute("mensaje", mensaje);
+            redirectAttributes.addFlashAttribute("mensaje", "Jugador guardado correctamente");
             return "redirect:/jugadores";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al guardar el jugador: " + e.getMessage());
@@ -104,18 +72,10 @@ public class JugadorController {
     @GetMapping("/eliminar/{id}")
     public String eliminarJugador(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            Optional<Jugador> jugadorOpt = jugadorService.buscarPorId(id);
-            
-            if (jugadorOpt.isPresent()) {
-                Jugador jugador = jugadorOpt.get();
-                jugadorService.eliminar(id);
-                redirectAttributes.addFlashAttribute("mensaje", 
-                    "Jugador '" + jugador.getNombre() + " " + jugador.getApellidos() + "' eliminado correctamente");
-            } else {
-                redirectAttributes.addFlashAttribute("error", "El jugador no existe");
-            }
+            jugadorService.eliminar(id);
+            redirectAttributes.addFlashAttribute("mensaje", "Jugador eliminado correctamente");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar el jugador: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar el jugador");
         }
         return "redirect:/jugadores";
     }

@@ -6,7 +6,6 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -38,139 +37,58 @@
 
     <div class="container mt-5">
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <h2>Listado de Jugadores</h2>
             </div>
-            <div class="col-md-6 text-end">
-                <a th:href="@{/jugadores/nuevo}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Nuevo Jugador
-                </a>
+            <div class="col-md-4 text-end">
+                <a th:href="@{/jugadores/nuevo}" class="btn btn-primary">Nuevo Jugador</a>
             </div>
         </div>
         
-        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${mensaje}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <span th:text="${error}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        
-        <div class="card mb-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">Filtros</h5>
-            </div>
-            <div class="card-body">
-                <form th:action="@{/jugadores/buscar}" method="get" class="row g-3">
-                    <div class="col-md-4">
-                        <label for="busqueda" class="form-label">Nombre o Apellido</label>
-                        <input type="text" class="form-control" id="busqueda" name="busqueda" th:value="${param.busqueda}">
-                    </div>
-                    <div class="col-md-3">
-                        <label for="posicion" class="form-label">Posición</label>
-                        <select class="form-select" id="posicion" name="posicion">
-                            <option value="">Todas</option>
-                            <option value="Portero" th:selected="${param.posicion == 'Portero'}">Portero</option>
-                            <option value="Defensa" th:selected="${param.posicion == 'Defensa'}">Defensa</option>
-                            <option value="Centrocampista" th:selected="${param.posicion == 'Centrocampista'}">Centrocampista</option>
-                            <option value="Delantero" th:selected="${param.posicion == 'Delantero'}">Delantero</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="equipo" class="form-label">Equipo</label>
-                        <input type="text" class="form-control" id="equipo" name="equipo" th:value="${param.equipo}">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">Buscar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         
         <div class="card">
             <div class="card-body">
-                <div th:if="${jugadores.empty}" class="alert alert-info">
-                    No hay jugadores registrados. <a th:href="@{/jugadores/nuevo}" class="alert-link">¡Agrega uno nuevo!</a>
-                </div>
-                
-                <div th:if="${!jugadores.empty}" class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Apellidos</th>
-                                <th>Edad</th>
-                                <th>Posición</th>
-                                <th>Equipo</th>
-                                <th>Nacionalidad</th>
-                                <th>Nº Camiseta</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="jugador : ${jugadores}">
-                                <td th:text="${jugador.id}">1</td>
-                                <td th:text="${jugador.nombre}">Nombre</td>
-                                <td th:text="${jugador.apellidos}">Apellidos</td>
-                                <td th:text="${jugador.edad}">25</td>
-                                <td th:text="${jugador.posicion}">Delantero</td>
-                                <td th:text="${jugador.equipo}">Equipo</td>
-                                <td th:text="${jugador.nacionalidad}">España</td>
-                                <td th:text="${jugador.numeroCamiseta}">10</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a th:href="@{/jugadores/detalle/{id}(id=${jugador.id})}" class="btn btn-info" title="Ver detalle">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-warning" title="Editar">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-danger" title="Eliminar"
-                                                th:onclick="'confirmarEliminar(' + ${jugador.id} + ', \'' + ${jugador.nombre} + ' ' + ${jugador.apellidos} + '\')'">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de confirmación de eliminación -->
-    <div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="eliminarModalLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas eliminar al jugador <span id="nombreJugador"></span>?</p>
-                    <p class="text-danger">Esta acción no se puede deshacer.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="#" id="confirmarEliminarBtn" class="btn btn-danger">Eliminar</a>
-                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Edad</th>
+                            <th>Posición</th>
+                            <th>Equipo</th>
+                            <th>Nacionalidad</th>
+                            <th>Nº Camiseta</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${jugadores.empty}">
+                            <td colspan="9" class="text-center">No hay jugadores registrados</td>
+                        </tr>
+                        <tr th:each="jugador : ${jugadores}">
+                            <td th:text="${jugador.id}">1</td>
+                            <td th:text="${jugador.nombre}">Nombre</td>
+                            <td th:text="${jugador.apellidos}">Apellidos</td>
+                            <td th:text="${jugador.edad}">25</td>
+                            <td th:text="${jugador.posicion}">Delantero</td>
+                            <td th:text="${jugador.equipo}">Equipo</td>
+                            <td th:text="${jugador.nacionalidad}">España</td>
+                            <td th:text="${jugador.numeroCamiseta}">10</td>
+                            <td>
+                                <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-sm btn-warning">Editar</a>
+                                <a th:href="@{/jugadores/eliminar/{id}(id=${jugador.id})}" class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('¿Estás seguro de eliminar este jugador?')">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function confirmarEliminar(id, nombre) {
-            document.getElementById('nombreJugador').textContent = nombre;
-            document.getElementById('confirmarEliminarBtn').href = '/jugadores/eliminar/' + id;
-            
-            const modal = new bootstrap.Modal(document.getElementById('eliminarModal'));
-            modal.show();
-        }
-    </script>
 </body>
 </html> 
