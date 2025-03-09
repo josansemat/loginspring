@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .requestMatchers("/", "/registro", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/jugadores/**").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
