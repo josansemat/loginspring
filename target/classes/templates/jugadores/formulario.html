@@ -6,6 +6,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -43,47 +45,67 @@
                         <h3 th:text="${jugador.id == null ? 'Nuevo Jugador' : 'Editar Jugador'}">Formulario de Jugador</h3>
                     </div>
                     <div class="card-body">
+                        <!-- Errores generales del formulario -->
+                        <div th:object="${jugador}" th:remove="tag">
+                            <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                                <li th:each="error : ${#fields.errors('*')}" th:text="${error}"></li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Error específico del servidor -->
                         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
                         
-                        <form th:action="@{/jugadores/guardar}" th:object="${jugador}" method="post">
+                        <form th:action="@{/jugadores/guardar}" th:object="${jugador}" method="post" id="jugadorForm">
                             <input type="hidden" th:field="*{id}" />
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" required>
+                                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control" 
+                                           th:class="${#fields.hasErrors('nombre')} ? 'form-control is-invalid' : 'form-control'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="apellidos" class="form-label">Apellidos</label>
-                                    <input type="text" th:field="*{apellidos}" id="apellidos" class="form-control" required>
+                                    <input type="text" th:field="*{apellidos}" id="apellidos" class="form-control"
+                                           th:class="${#fields.hasErrors('apellidos')} ? 'form-control is-invalid' : 'form-control'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
                                 </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label for="edad" class="form-label">Edad</label>
-                                    <input type="number" th:field="*{edad}" id="edad" class="form-control" min="15" max="50">
+                                    <input type="number" th:field="*{edad}" id="edad" class="form-control" min="15" max="50"
+                                           th:class="${#fields.hasErrors('edad')} ? 'form-control is-invalid' : 'form-control'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('edad')}" th:errors="*{edad}"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="posicion" class="form-label">Posición</label>
-                                    <select th:field="*{posicion}" id="posicion" class="form-select">
+                                    <select th:field="*{posicion}" id="posicion" class="form-select"
+                                            th:class="${#fields.hasErrors('posicion')} ? 'form-select is-invalid' : 'form-select'">
                                         <option value="">Seleccione...</option>
                                         <option value="Portero">Portero</option>
                                         <option value="Defensa">Defensa</option>
                                         <option value="Centrocampista">Centrocampista</option>
                                         <option value="Delantero">Delantero</option>
                                     </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('posicion')}" th:errors="*{posicion}"></div>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="numeroCamiseta" class="form-label">Número de Camiseta</label>
-                                    <input type="number" th:field="*{numeroCamiseta}" id="numeroCamiseta" class="form-control" min="1" max="99">
+                                    <input type="number" th:field="*{numeroCamiseta}" id="numeroCamiseta" class="form-control" min="1" max="99"
+                                           th:class="${#fields.hasErrors('numeroCamiseta')} ? 'form-control is-invalid' : 'form-control'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('numeroCamiseta')}" th:errors="*{numeroCamiseta}"></div>
                                 </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="equipo" class="form-label">Equipo</label>
-                                    <input type="text" th:field="*{equipo}" id="equipo" class="form-control">
+                                    <input type="text" th:field="*{equipo}" id="equipo" class="form-control"
+                                           th:class="${#fields.hasErrors('equipo')} ? 'form-control is-invalid' : 'form-control'">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('equipo')}" th:errors="*{equipo}"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="nacionalidad" class="form-label">Nacionalidad</label>
@@ -103,5 +125,6 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
 </body>
 </html> 
