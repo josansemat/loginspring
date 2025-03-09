@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "jugadores")
@@ -29,6 +30,9 @@ public class Jugador {
     private String equipo;
     
     private int numeroCamiseta;
+    
+    @Column(nullable = false)
+    private LocalDate fechaNacimiento;
     
     // Opcional: para saber quién registró al jugador
     @ManyToOne

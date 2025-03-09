@@ -56,6 +56,7 @@
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Apellidos</th>
+                            <th>Fecha Nac.</th>
                             <th>Edad</th>
                             <th>Posición</th>
                             <th>Equipo</th>
@@ -65,12 +66,13 @@
                     </thead>
                     <tbody>
                         <tr th:if="${jugadores.empty}">
-                            <td colspan="8" class="text-center">No hay jugadores registrados</td>
+                            <td colspan="9" class="text-center">No hay jugadores registrados</td>
                         </tr>
                         <tr th:each="jugador : ${jugadores}">
                             <td th:text="${jugador.id}">1</td>
                             <td th:text="${jugador.nombre}">Nombre</td>
                             <td th:text="${jugador.apellidos}">Apellidos</td>
+                            <td th:text="${#temporals.format(jugador.fechaNacimiento, 'dd/MM/yyyy')}">01/01/1990</td>
                             <td th:text="${jugador.edad}">25</td>
                             <td th:text="${jugador.posicion}">Delantero</td>
                             <td th:text="${jugador.equipo}">Equipo</td>

@@ -65,6 +65,10 @@
                                     <input type="number" th:field="*{edad}" id="edad" class="form-control" min="15" max="50">
                                 </div>
                                 <div class="col-md-4">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" th:field="*{fechaNacimiento}" id="fechaNacimiento" class="form-control" required>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="posicion" class="form-label">Posición</label>
                                     <select th:field="*{posicion}" id="posicion" class="form-select">
                                         <option value="">Seleccione...</option>
@@ -74,15 +78,17 @@
                                         <option value="Delantero">Delantero</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="equipo" class="form-label">Equipo</label>
+                                    <input type="text" th:field="*{equipo}" id="equipo" class="form-control">
+                                </div>
+                                <div class="col-md-6">
                                     <label for="numeroCamiseta" class="form-label">Número de Camiseta</label>
                                     <input type="number" th:field="*{numeroCamiseta}" id="numeroCamiseta" class="form-control" min="1" max="99">
                                 </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="equipo" class="form-label">Equipo</label>
-                                <input type="text" th:field="*{equipo}" id="equipo" class="form-control">
                             </div>
                             
                             <div class="d-grid gap-2">
