@@ -4,14 +4,17 @@ import com.example.demo.model.Jugador;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.JugadorService;
 import com.example.demo.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -30,6 +33,21 @@ public class JugadorController {
         return "jugadores/lista";
     }
     
+    @GetMapping("/buscar")
+    public String buscarJugadores(@RequestParam(required = false) String termino, Model model) {
+        List<Jugador> resultados;
+        
+        if (termino != null && !termino.isEmpty()) {
+            resultados = jugadorService.buscarPorPatron(termino);
+            model.addAttribute("terminoBusqueda", termino);
+        } else {
+            resultados = jugadorService.listarTodos();
+        }
+        
+        model.addAttribute("jugadores", resultados);
+        return "jugadores/lista";
+    }
+    
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("jugador", new Jugador());
@@ -37,7 +55,15 @@ public class JugadorController {
     }
     
     @PostMapping("/guardar")
-    public String guardarJugador(@ModelAttribute Jugador jugador, RedirectAttributes redirectAttributes) {
+    public String guardarJugador(@Valid @ModelAttribute Jugador jugador, 
+                                BindingResult result, 
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
+        if (result.hasErrors()) {
+            return "jugadores/formulario";
+        }
+        
         try {
             // Obtener el usuario actual
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -47,12 +73,15 @@ public class JugadorController {
                 jugador.setCreadoPor(usuarioOpt.get());
             }
             
+            // Guardar en variable de sesión el último jugador guardado
+            session.setAttribute("ultimoJugador", jugador);
+            
             jugadorService.guardar(jugador);
             redirectAttributes.addFlashAttribute("mensaje", "Jugador guardado correctamente");
             return "redirect:/jugadores";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al guardar el jugador: " + e.getMessage());
-            return "redirect:/jugadores/nuevo";
+            model.addAttribute("error", "Error al guardar el jugador: " + e.getMessage());
+            return "jugadores/formulario";
         }
     }
     
@@ -78,5 +107,18 @@ public class JugadorController {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar el jugador");
         }
         return "redirect:/jugadores";
+    }
+    
+    @GetMapping("/ultimo")
+    public String verUltimoJugador(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        Jugador ultimoJugador = (Jugador) session.getAttribute("ultimoJugador");
+        
+        if (ultimoJugador != null) {
+            model.addAttribute("jugador", ultimoJugador);
+            return "jugadores/detalle";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "No hay jugador reciente en sesión");
+            return "redirect:/jugadores";
+        }
     }
 } 

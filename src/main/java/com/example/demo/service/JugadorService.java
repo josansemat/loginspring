@@ -37,4 +37,8 @@ public class JugadorService {
     public List<Jugador> buscarPorPosicion(String posicion) {
         return jugadorRepository.findByPosicion(posicion);
     }
+    
+    public List<Jugador> buscarPorPatron(String patron) {
+        return jugadorRepository.buscarPorPatron(patron);
+    }
 } 

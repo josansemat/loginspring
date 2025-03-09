@@ -1,39 +1,28 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "player")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
-public class Jugador {
+public class Jugador extends Persona {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(nullable = false)
-    private String nombre;
-    
-    @Column(nullable = false)
-    private String apellidos;
-    
-    private int edad;
-    
+    @NotBlank(message = "La posición es obligatoria")
     private String posicion;
     
+    @NotBlank(message = "El equipo es obligatorio")
     private String equipo;
     
+    @Min(value = 1, message = "El número debe ser mayor que 0")
+    @Max(value = 99, message = "El número debe ser menor que 100")
     private int numeroCamiseta;
     
-    // Campo para nacionalidad en caso de que exista en la base de datos
-    private String nacionalidad = "España";
-    
-    // Opcional: para saber quién registró al jugador
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario creadoPor;
