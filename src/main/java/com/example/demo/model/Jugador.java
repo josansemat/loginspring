@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -9,19 +8,28 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "player")
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class Jugador extends Persona {
+public class Jugador {
     
-    @NotBlank(message = "La posición es obligatoria")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @Column(nullable = false)
+    private String nombre;
+    
+    @Column(nullable = false)
+    private String apellidos;
+    
+    private int edad;
+    
     private String posicion;
     
-    @NotBlank(message = "El equipo es obligatorio")
     private String equipo;
     
-    @Min(value = 1, message = "El número debe ser mayor que 0")
-    @Max(value = 99, message = "El número debe ser menor que 100")
     private int numeroCamiseta;
+    
+    private String nacionalidad = "España";
     
     @ManyToOne
     @JoinColumn(name = "usuario_id")

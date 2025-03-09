@@ -39,6 +39,7 @@ public class JugadorService {
     }
     
     public List<Jugador> buscarPorPatron(String patron) {
-        return jugadorRepository.buscarPorPatron(patron);
+        return jugadorRepository.findByNombreContainingIgnoreCaseOrApellidosContainingIgnoreCaseOrEquipoContainingIgnoreCaseOrPosicionContainingIgnoreCase(
+                patron, patron, patron, patron);
     }
 } 
