@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 
 @Entity
-@Table(name = "jugadores")
+@Table(name = "player")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,8 +30,8 @@ public class Jugador {
     
     private int numeroCamiseta;
     
-    @Column(nullable = false)
-    private LocalDate fechaNacimiento;
+    // Campo para nacionalidad en caso de que exista en la base de datos
+    private String nacionalidad = "España";
     
     // Opcional: para saber quién registró al jugador
     @ManyToOne

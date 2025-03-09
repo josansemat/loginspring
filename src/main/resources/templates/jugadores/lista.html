@@ -56,10 +56,10 @@
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Apellidos</th>
-                            <th>Fecha Nac.</th>
                             <th>Edad</th>
                             <th>Posición</th>
                             <th>Equipo</th>
+                            <th>Nacionalidad</th>
                             <th>Nº Camiseta</th>
                             <th>Acciones</th>
                         </tr>
@@ -72,10 +72,10 @@
                             <td th:text="${jugador.id}">1</td>
                             <td th:text="${jugador.nombre}">Nombre</td>
                             <td th:text="${jugador.apellidos}">Apellidos</td>
-                            <td th:text="${#temporals.format(jugador.fechaNacimiento, 'dd/MM/yyyy')}">01/01/1990</td>
                             <td th:text="${jugador.edad}">25</td>
                             <td th:text="${jugador.posicion}">Delantero</td>
                             <td th:text="${jugador.equipo}">Equipo</td>
+                            <td th:text="${jugador.nacionalidad}">España</td>
                             <td th:text="${jugador.numeroCamiseta}">10</td>
                             <td>
                                 <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-sm btn-warning">Editar</a>
