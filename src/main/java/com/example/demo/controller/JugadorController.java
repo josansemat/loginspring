@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -54,14 +53,9 @@ public class JugadorController {
     }
     
     @PostMapping("/guardar")
-    public String guardarJugador(@Valid @ModelAttribute Jugador jugador, 
-                                BindingResult result, 
+    public String guardarJugador(@ModelAttribute Jugador jugador, 
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
-        if (result.hasErrors()) {
-            return "jugadores/formulario";
-        }
-        
         try {
             // Obtener el usuario actual
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
