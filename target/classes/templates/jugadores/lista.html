@@ -6,8 +6,6 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/estilos.css}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -39,43 +37,29 @@
 
     <div class="container mt-5">
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <h2>Listado de Jugadores</h2>
             </div>
-            <div class="col-md-6 text-end">
-                <a th:href="@{/jugadores/nuevo}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Nuevo Jugador
-                </a>
-                <a th:href="@{/jugadores/ultimo}" class="btn btn-info">
-                    <i class="fas fa-history"></i> Último Jugador
-                </a>
+            <div class="col-md-4 text-end">
+                <a th:href="@{/jugadores/nuevo}" class="btn btn-primary">Nuevo Jugador</a>
             </div>
         </div>
         
         <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
         
+        <!-- Buscador simple -->
+        <div class="mb-3">
+            <form th:action="@{/jugadores/buscar}" method="get" class="d-flex">
+                <input type="text" name="termino" class="form-control me-2" placeholder="Buscar jugador..." 
+                       th:value="${terminoBusqueda}">
+                <button type="submit" class="btn btn-primary">Buscar</button>
+            </form>
+        </div>
+        
         <div class="card">
             <div class="card-body">
-                <!-- Buscador -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="search-box">
-                            <form th:action="@{/jugadores/buscar}" method="get" class="d-flex">
-                                <input type="text" name="termino" class="form-control" placeholder="Buscar por nombre, apellido, equipo..." 
-                                       th:value="${terminoBusqueda}">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <input type="text" id="filtroRapido" class="form-control" placeholder="Filtro rápido...">
-                    </div>
-                </div>
-                
-                <table class="table table-striped table-jugadores" id="tablaJugadores">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -90,10 +74,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:if="${jugadores.empty}">
+                        <tr th:if="${jugadores == null || jugadores.empty}">
                             <td colspan="9" class="text-center">No hay jugadores registrados</td>
                         </tr>
-                        <tr th:each="jugador : ${jugadores}" class="fade-in">
+                        <tr th:each="jugador : ${jugadores}">
                             <td th:text="${jugador.id}">1</td>
                             <td th:text="${jugador.nombre}">Nombre</td>
                             <td th:text="${jugador.apellidos}">Apellidos</td>
@@ -103,14 +87,9 @@
                             <td th:text="${jugador.nacionalidad}">España</td>
                             <td th:text="${jugador.numeroCamiseta}">10</td>
                             <td>
-                                <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <button class="btn btn-sm btn-danger" 
-                                   th:onclick="'confirmarEliminar(' + ${jugador.id} + ', \'' + ${jugador.nombre} + ' ' + ${jugador.apellidos} + '\')'"
-                                   title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                <a th:href="@{/jugadores/editar/{id}(id=${jugador.id})}" class="btn btn-sm btn-warning">Editar</a>
+                                <a th:href="@{/jugadores/eliminar/{id}(id=${jugador.id})}" class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('¿Estás seguro de eliminar este jugador?')">Eliminar</a>
                             </td>
                         </tr>
                     </tbody>
@@ -120,6 +99,5 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/js/jugadores.js}"></script>
 </body>
 </html> 
