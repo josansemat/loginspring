@@ -4,8 +4,6 @@ import com.example.demo.model.Jugador;
 import com.example.demo.model.Usuario;
 import com.example.demo.service.JugadorService;
 import com.example.demo.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,8 +57,7 @@ public class JugadorController {
     public String guardarJugador(@Valid @ModelAttribute Jugador jugador, 
                                 BindingResult result, 
                                 Model model,
-                                RedirectAttributes redirectAttributes,
-                                HttpSession session) {
+                                RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "jugadores/formulario";
         }
@@ -73,9 +70,6 @@ public class JugadorController {
             if (usuarioOpt.isPresent()) {
                 jugador.setCreadoPor(usuarioOpt.get());
             }
-            
-            // Guardar en variable de sesión el último jugador guardado
-            session.setAttribute("ultimoJugador", jugador);
             
             jugadorService.guardar(jugador);
             redirectAttributes.addFlashAttribute("mensaje", "Jugador guardado correctamente");
@@ -108,18 +102,5 @@ public class JugadorController {
             redirectAttributes.addFlashAttribute("error", "Error al eliminar el jugador");
         }
         return "redirect:/jugadores";
-    }
-    
-    @GetMapping("/ultimo")
-    public String verUltimoJugador(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        Jugador ultimoJugador = (Jugador) session.getAttribute("ultimoJugador");
-        
-        if (ultimoJugador != null) {
-            model.addAttribute("jugador", ultimoJugador);
-            return "jugadores/detalle";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "No hay jugador reciente en sesión");
-            return "redirect:/jugadores";
-        }
     }
 } 
